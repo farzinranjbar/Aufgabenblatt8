@@ -91,6 +91,7 @@ public class PlatzVerkaufsWerkzeug
      */
     private void fuehreBarzahlungDurch()
     {
+        //TODO Rufe hier den BarzahlungWerkzeug auf! 
         verkaufePlaetze(_vorstellung);
     }
 

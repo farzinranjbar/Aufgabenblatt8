@@ -57,8 +57,6 @@ public class BarzahlungWerkzeugUI
         _eingabePreisFeld.setBounds(44, 68, 346, 44);
         _frame.getContentPane().add(_eingabePreisFeld);
         _eingabePreisFeld.setColumns(10);
-        
-        zeigeFenster(); 
     }
     
     /**
@@ -114,7 +112,7 @@ public class BarzahlungWerkzeugUI
     /**
      * Gibt den _summeFeld-JTextPane zurück.
      */
-    public JTextField get_summeFeldJTextPane()
+    public JTextField get_summeFeldJTextField()
     {
         return _summeFeld; 
     }
@@ -122,7 +120,7 @@ public class BarzahlungWerkzeugUI
     /**
      * Gibt den _eingabePreisFeld-JTextPane zurück.
      */
-    public JTextField get_restFeldJTextPane()
+    public JTextField get_restFeldJTextField()
     {
         return _restFeld; 
     }

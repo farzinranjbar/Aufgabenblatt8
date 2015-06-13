@@ -36,25 +36,12 @@ public class PlatzVerkaufsWerkzeug
      */
     public PlatzVerkaufsWerkzeug()
     {
+        _barzahlungWerkzeug = new BarzahlungWerkzeug();
+        erzeugeListenerFuerSubwerkzeuge();
         _ui = new PlatzVerkaufsWerkzeugUI();
         registriereUIAktionen();
-        // Am Anfang wird keine Vorstellung angezeigt:
         setVorstellung(null);
-        _barzahlungWerkzeug = new BarzahlungWerkzeug();
-        erzeugeBeobachterFuerBeobachtbaren();
     }
-
-    private void erzeugeBeobachterFuerBeobachtbaren() {
-    	  _barzahlungWerkzeug.registriereBeobachter(new SubwerkzeugObserver()
-          {
-              @Override
-              public void reagiereAufAenderung()
-              {
-            	  verkaufePlaetze(_vorstellung);
-              }
-          });
-		
-	}
 
 	/**
      * Gibt das Panel dieses Subwerkzeugs zurück. Das Panel sollte von einem
@@ -102,6 +89,22 @@ public class PlatzVerkaufsWerkzeug
                 }
             });
     }
+    
+    /**
+     * Erzeugt und registriert die Beobachter, die die Subwerkzeuge beobachten.
+     */
+    private void erzeugeListenerFuerSubwerkzeuge()
+    {
+        _barzahlungWerkzeug.registriereBeobachter(new SubwerkzeugObserver()
+        {
+            @Override
+            public void reagiereAufAenderung()
+            {
+                verkaufePlaetze(_vorstellung);
+            }
+        });
+
+    }
 
     /**
      * Startet die Barzahlung.
@@ -109,9 +112,9 @@ public class PlatzVerkaufsWerkzeug
     private void fuehreBarzahlungDurch()
     {
         //TODO Rufe hier den BarzahlungWerkzeug auf! 
-        BarzahlungWerkzeug fenster = new BarzahlungWerkzeug(); 
-        fenster.aktuallisiereSumme(preis);
-        fenster.aktuallisiereRestbetrag(preis);
+        _barzahlungWerkzeug.oeffneFenster(); 
+        _barzahlungWerkzeug.aktuallisiereSumme(preis);
+       
         
     }
 

@@ -10,7 +10,8 @@ import javax.swing.JPanel;
 import de.uni_hamburg.informatik.swt.se2.kino.fachwerte.Platz;
 import de.uni_hamburg.informatik.swt.se2.kino.materialien.Kinosaal;
 import de.uni_hamburg.informatik.swt.se2.kino.materialien.Vorstellung;
-import de.uni_hamburg.informatik.swt.se2.kino.werkzeuge.barzahlung.*;;
+import de.uni_hamburg.informatik.swt.se2.kino.werkzeuge.SubwerkzeugObserver;
+import de.uni_hamburg.informatik.swt.se2.kino.werkzeuge.barzahlung.*;
 
 /**
  * Mit diesem Werkzeug können Plätze verkauft und storniert werden. Es arbeitet
@@ -26,9 +27,10 @@ public class PlatzVerkaufsWerkzeug
 {
     // Die aktuelle Vorstellung, deren Plätze angezeigt werden. Kann null sein.
     private Vorstellung _vorstellung;
+    private int preis;
 
     private PlatzVerkaufsWerkzeugUI _ui;
-
+    private BarzahlungWerkzeug _barzahlungWerkzeug;
     /**
      * Initialisiert das PlatzVerkaufsWerkzeug.
      */
@@ -38,9 +40,23 @@ public class PlatzVerkaufsWerkzeug
         registriereUIAktionen();
         // Am Anfang wird keine Vorstellung angezeigt:
         setVorstellung(null);
+        _barzahlungWerkzeug = new BarzahlungWerkzeug();
+        erzeugeBeobachterFuerBeobachtbaren();
     }
 
-    /**
+    private void erzeugeBeobachterFuerBeobachtbaren() {
+    	  _barzahlungWerkzeug.registriereBeobachter(new SubwerkzeugObserver()
+          {
+              @Override
+              public void reagiereAufAenderung()
+              {
+            	  verkaufePlaetze(_vorstellung);
+              }
+          });
+		
+	}
+
+	/**
      * Gibt das Panel dieses Subwerkzeugs zurück. Das Panel sollte von einem
      * Kontextwerkzeug eingebettet werden.
      * 
@@ -93,8 +109,10 @@ public class PlatzVerkaufsWerkzeug
     private void fuehreBarzahlungDurch()
     {
         //TODO Rufe hier den BarzahlungWerkzeug auf! 
-        new BarzahlungWerkzeug(); 
-        verkaufePlaetze(_vorstellung);
+        BarzahlungWerkzeug fenster = new BarzahlungWerkzeug(); 
+        fenster.aktuallisiereSumme(preis);
+        fenster.aktuallisiereRestbetrag(preis);
+        
     }
 
     /**
@@ -119,7 +137,7 @@ public class PlatzVerkaufsWerkzeug
     {
         if (istVerkaufenMoeglich(plaetze))
         {
-            int preis = _vorstellung.getPreisFuerPlaetze(plaetze);
+            preis = _vorstellung.getPreisFuerPlaetze(plaetze);
             _ui.getPreisLabel()
                 .setText("Gesamtpreis: " + preis + " Eurocent");
         }

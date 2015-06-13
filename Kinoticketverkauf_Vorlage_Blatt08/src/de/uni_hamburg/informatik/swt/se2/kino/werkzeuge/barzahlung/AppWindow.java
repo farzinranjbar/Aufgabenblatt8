@@ -5,7 +5,7 @@ import javax.swing.JTextField;
 
 import javax.swing.JButton;
 
-public class BarzahlungWerkzeugUI
+public class AppWindow
 {
 
     private JFrame _frame;
@@ -18,7 +18,7 @@ public class BarzahlungWerkzeugUI
      /**
      * Create the application.
      */
-    public BarzahlungWerkzeugUI()
+    public AppWindow()
     {
         erstellePanel();
     }

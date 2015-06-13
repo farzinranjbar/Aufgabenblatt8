@@ -9,16 +9,17 @@ public class BarzahlungWerkzeug extends ObservableSubwerkzeug
 {
     private BarzahlungWerkzeugUI _ui;
     private int _preis;
-    private int eingabeBetrag;
-    private int restbetrag;
+    private int _eingabeBetrag;
+    private int _restbetrag;
+    private String _eingabe;
 
     public BarzahlungWerkzeug()
     {
         _ui = new BarzahlungWerkzeugUI();
         registriereUIAktionen();
-       
+
     }
-    
+
     private void registriereUIAktionen()
     {
         _ui.getAbbrechenButton()
@@ -37,17 +38,8 @@ public class BarzahlungWerkzeug extends ObservableSubwerkzeug
                 @Override
                 public void actionPerformed(ActionEvent e)
                 {
+                    wandleEingabeInZahl();
                     verkaufePlaeze();
-                }
-            });
-
-        _ui.get_eingabePreisFeldJTextField()
-            .addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    aktuallisiereRestbetrag();
                 }
             });
     }
@@ -56,38 +48,45 @@ public class BarzahlungWerkzeug extends ObservableSubwerkzeug
     {
         _ui.zeigeFenster();
     }
-    
+
     public void aktuallisiereSumme(int preis)
     {
         _preis = preis;
         _ui.get_summeFeldJTextField()
             .setText("Gesamtpreis: " + preis + " Eurocent");
+        aktuallisiereRestbetrag();
     }
 
     public void aktuallisiereRestbetrag()
     {
-        wandleEingabeInZahl();
-        restbetrag = _preis - eingabeBetrag;
+
+        _restbetrag = _preis - _eingabeBetrag;
         _ui.get_restFeldJTextField()
-            .setText("Restbetrag: " + restbetrag + " Eurocent");
+            .setText("Restbetrag: " + _restbetrag + " Eurocent");
     }
-    
+
     public void wandleEingabeInZahl()
     {
-        String eingabe = _ui.get_eingabePreisFeldJTextField()
-            .getText();
-        eingabeBetrag = Integer.parseInt(eingabe);
+        try
+        {
+            _eingabe = _ui.get_eingabePreisFeldJTextField()
+                .getText();
+            _eingabeBetrag = Integer.parseInt(_eingabe);
+        }
+        catch (NumberFormatException ex)
+        {
+            _ui.get_eingabePreisFeldJTextField()
+                .setText("Trage hier bitte einen Betrag ein!");
+        }
     }
 
     public void verkaufePlaeze()
     {
-        if(restbetrag <= 0)
+        aktuallisiereRestbetrag();
+        if (_restbetrag <= 0)
         {
-        informiereUeberAenderung();
-        _ui.schliesseFenster();
-        }
-        else
-        {
+            informiereUeberAenderung();
+            _ui.schliesseFenster();
         }
     }
 }

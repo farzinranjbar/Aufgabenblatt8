@@ -1,8 +1,10 @@
 package de.uni_hamburg.informatik.swt.se2.kino.werkzeuge.barzahlung;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import de.uni_hamburg.informatik.swt.se2.kino.materialien.Vorstellung;
 import de.uni_hamburg.informatik.swt.se2.kino.werkzeuge.ObservableSubwerkzeug;
 
 public class BarzahlungWerkzeug extends ObservableSubwerkzeug
@@ -11,6 +13,7 @@ public class BarzahlungWerkzeug extends ObservableSubwerkzeug
     private int _preis;
     private int _eingabeBetrag;
     private int _restbetrag;
+    private int _gezahlterBetrag;
     private String _eingabe;
 
     public BarzahlungWerkzeug()
@@ -42,6 +45,27 @@ public class BarzahlungWerkzeug extends ObservableSubwerkzeug
                     verkaufePlaeze();
                 }
             });
+        
+        _ui.get_eingabePreisFeldJTextField().addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                wandleEingabeInZahl();
+                aktuallisiereGezahlterBetrag();
+                aktuallisiereRestbetrag();
+                if (_restbetrag <= 0)
+                {
+                    _ui.getOkButton().setEnabled(true);
+                }
+                else
+                {
+                    _ui.getOkButton().setEnabled(false);
+                }
+                _ui.get_eingabePreisFeldJTextField().setText(null);
+                _eingabeBetrag = 0;
+            }
+        });
     }
 
     public void oeffneFenster()
@@ -49,20 +73,41 @@ public class BarzahlungWerkzeug extends ObservableSubwerkzeug
         _ui.zeigeFenster();
     }
 
-    public void aktuallisiereSumme(int preis)
+    public void aktuallisiereSumme(int preis, Vorstellung vorstellung, int anzahlPlaetze)
     {
         _preis = preis;
-        _ui.get_summeFeldJTextField()
+        _ui.get_gesamtbetrag()
             .setText("Gesamtpreis: " + preis + " Eurocent");
         aktuallisiereRestbetrag();
+        aktuallisiereGezahlterBetrag();
+        aktuallisiereInformation(vorstellung, anzahlPlaetze);
+    }
+    
+    public void aktuallisiereInformation(Vorstellung vorstellung, int anzahlPlaetze)
+    {
+        _ui.get_information().setText("     "+ vorstellung);
+        _ui.get_information2().setText("     "+ anzahlPlaetze);
     }
 
     public void aktuallisiereRestbetrag()
     {
-
-        _restbetrag = _preis - _eingabeBetrag;
-        _ui.get_restFeldJTextField()
+        _restbetrag = _preis - _gezahlterBetrag;
+        _ui.get_restbetrag()
             .setText("Restbetrag: " + _restbetrag + " Eurocent");
+        if(_restbetrag <= 0)
+        {
+            _ui.get_restbetrag().setBackground(Color.GREEN);
+        }
+        else
+        {
+            _ui.get_restbetrag().setBackground(Color.RED);
+        }
+    }
+    
+    public void aktuallisiereGezahlterBetrag()
+    {
+        _gezahlterBetrag += _eingabeBetrag;
+        _ui.get_gezahlterBetrag().setText("Gezahlter Betrag: " + _gezahlterBetrag);
     }
 
     public void wandleEingabeInZahl()
@@ -82,9 +127,14 @@ public class BarzahlungWerkzeug extends ObservableSubwerkzeug
 
     public void verkaufePlaeze()
     {
+        aktuallisiereGezahlterBetrag();
         aktuallisiereRestbetrag();
         if (_restbetrag <= 0)
         {
+            _restbetrag = 0; 
+            _gezahlterBetrag = 0;
+            _eingabeBetrag = 0;
+            _ui.get_eingabePreisFeldJTextField().setText(null);
             informiereUeberAenderung();
             _ui.schliesseFenster();
         }

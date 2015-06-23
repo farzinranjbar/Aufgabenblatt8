@@ -111,9 +111,15 @@ public class PlatzVerkaufsWerkzeug
      */
     private void fuehreBarzahlungDurch()
     {
-        //TODO Rufe hier den BarzahlungWerkzeug auf! 
+        Set<Platz> plaetze = _ui.getPlatzplan()
+                .getAusgewaehltePlaetze();
+        int anzahlPlaetze = 0;
+        for (Platz platz : plaetze)
+        {
+            anzahlPlaetze += 1;
+        }
+        _barzahlungWerkzeug.aktuallisiereSumme(preis, _vorstellung, anzahlPlaetze);
         _barzahlungWerkzeug.oeffneFenster(); 
-        _barzahlungWerkzeug.aktuallisiereSumme(preis);
        
         
     }

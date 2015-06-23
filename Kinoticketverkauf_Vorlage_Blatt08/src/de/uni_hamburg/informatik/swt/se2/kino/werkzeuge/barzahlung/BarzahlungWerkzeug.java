@@ -52,25 +52,9 @@ public class BarzahlungWerkzeug extends ObservableSubwerkzeug
             public void actionPerformed(ActionEvent e)
             {
                 wandleEingabeInZahl();
-                aktuallisiereGezahlterBetrag();
-                aktuallisiereRestbetrag();
-                if (_restbetrag <= 0)
-                {
-                    _ui.getOkButton().setEnabled(true);
-                }
-                else
-                {
-                    _ui.getOkButton().setEnabled(false);
-                }
-                _ui.get_eingabePreisFeldJTextField().setText(null);
-                _eingabeBetrag = 0;
+                aktuallisiereNachEnterDieAnzeige();
             }
         });
-    }
-
-    public void oeffneFenster()
-    {
-        _ui.zeigeFenster();
     }
 
     public void aktuallisiereSumme(int preis, Vorstellung vorstellung, int anzahlPlaetze)
@@ -80,13 +64,24 @@ public class BarzahlungWerkzeug extends ObservableSubwerkzeug
             .setText("Gesamtpreis: " + preis + " Eurocent");
         aktuallisiereRestbetrag();
         aktuallisiereGezahlterBetrag();
-        aktuallisiereInformation(vorstellung, anzahlPlaetze);
+        aktuallisiereVeranstaltungsinformation(vorstellung, anzahlPlaetze);
     }
     
-    public void aktuallisiereInformation(Vorstellung vorstellung, int anzahlPlaetze)
+    public void aktuallisiereVeranstaltungsinformation(Vorstellung vorstellung, int anzahlPlaetze)
     {
-        _ui.get_information().setText("     "+ vorstellung);
-        _ui.get_information2().setText("     "+ anzahlPlaetze);
+        _ui.get_veranstaltungsinformation().setText("     "+ vorstellung);
+        _ui.get_anzahlDerPlaetze().setText("     "+ anzahlPlaetze);
+    }
+
+    public void oeffneFenster()
+    {
+        _ui.zeigeFenster();
+    }
+
+    public void aktuallisiereGezahlterBetrag()
+    {
+        _gezahlterBetrag += _eingabeBetrag;
+        _ui.get_gezahlterBetrag().setText("Gezahlter Betrag: " + _gezahlterBetrag);
     }
 
     public void aktuallisiereRestbetrag()
@@ -104,12 +99,6 @@ public class BarzahlungWerkzeug extends ObservableSubwerkzeug
         }
     }
     
-    public void aktuallisiereGezahlterBetrag()
-    {
-        _gezahlterBetrag += _eingabeBetrag;
-        _ui.get_gezahlterBetrag().setText("Gezahlter Betrag: " + _gezahlterBetrag);
-    }
-
     public void wandleEingabeInZahl()
     {
         try
@@ -123,6 +112,22 @@ public class BarzahlungWerkzeug extends ObservableSubwerkzeug
             _ui.get_eingabePreisFeldJTextField()
                 .setText("Trage hier bitte einen Betrag ein!");
         }
+    }
+
+    public void aktuallisiereNachEnterDieAnzeige(){
+        aktuallisiereGezahlterBetrag();
+        aktuallisiereRestbetrag();
+        if (_restbetrag <= 0)
+        {
+            _ui.getOkButton().setEnabled(true);
+        }
+        else
+        {
+            _ui.getOkButton().setEnabled(false);
+        }
+        _ui.get_eingabePreisFeldJTextField().setText(null);
+        _eingabeBetrag = 0;
+        
     }
 
     public void verkaufePlaeze()
